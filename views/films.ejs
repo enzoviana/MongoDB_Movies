@@ -1,0 +1,94 @@
+
+
+<style>
+  form {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  button[type="button"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: lightblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid lightgray;
+  }
+
+  th {
+    background-color: lightgray;
+  }
+</style>
+
+<form action="/search" method="get">
+  <input type="text" name="search">
+  <button type="submit">Rechercher</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Titre</th>
+      <th>Année</th>
+      <th>Realisateur</th>
+      <th>Acteur</th>
+    </tr>
+  </thead>
+  <tbody id="filmsTable">
+    <!-- Boucle à travers les films et afficher les informations -->
+    <% for (var i = 0; i < Math.min(films.length, 50); i++) { %>
+      <tr>
+        <td><%= films[i].titre %></td>
+        <td><%= films[i].annee %></td>
+        <td><%= films[i].realisateur %></td>
+        <td>
+          <% for (var j = 0; j < films[i].acteurs.length; j++) { %>
+            <%= films[i].acteurs[j].nom %><%= j == films[i].acteurs.length - 1 ? '' : ', ' %>
+          <% } %>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+
+<div id="navigation">
+  <button type="button" onclick="previousPage()">Précédent</button>
+  <button type="button" onclick="nextPage()">Suivant</button>
+</div>
+
+<script>
+
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("cinema_db");
+  var query = { $or: [ { annee: searchYear }, { realisateur: searchDirector } ] };
+  dbo.collection("films").find(query).toArray(function(err, result) {
+    if (err) throw err;
+    console.log(result);
+    db.close();
+  });
+});
+
+</script>
