@@ -1,5 +1,3 @@
-# MongoDB_Movies
-
 # Cinema Database Application
 
 This is a simple web application that connects to a MongoDB database and allows you to search for films based on title, year, director, or actors.
